@@ -1,0 +1,10 @@
+ - [x] TODO: Get and installer extentions vscode par ligne de command
+ - [x] TODO: (Coverage) "Coverage Gutters" Fair marcher (install extentions, edit settings.json, in Mikefile=cov-xml)
+ - [x] TODO: (DOCS) Sphinx pour création automatique du Doc (instalation, test, in Mikefile)
+ - [x] TODO: (changelogs) Towncrier pour génération automatique changelogs (instalation, test, in Mikefile)
+ - TODO: tests bordure
+ - TODO: create fiche in JIRA and détails installation and configuration Coverage Gutters, Sphinx et Towncrier
+ - [x] TODO: alias fast for git add, amend and push
+ - [x] TODO: Install "TODO Tree" extension in vcode
+ - NOTE: ask chatgpt what is next
+ - TODO: implemtation pytest-bdd

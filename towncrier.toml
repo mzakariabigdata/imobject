@@ -1,0 +1,64 @@
+# doc : https://towncrier.readthedocs.io/en/latest/configuration.html
+[tool.towncrier]
+# configuration des changelogs
+package = "src"
+directory = "changelogs"
+filename = "NEWS.rst"
+name = "arbitrary project name"
+issue_format = "https://deepdev.atlassian.net/jira/software/projects/MA/boards/{issue}"
+# template = "towncrier"
+
+[tool.towncrier.fragment.feat]
+directory = "feat"
+name = "Features"
+showcontent = true
+[tool.towncrier.fragment.doc]
+directory = "doc"
+name = "Improved Documentation"
+showcontent = true
+[tool.towncrier.fragment.fix]
+
+[tool.towncrier.fragment.chore]
+name = "Other Tasks"
+showcontent = true
+
+# [[tool.towncrier.type]]
+# directory = "chore"
+# name = "Other Tasks"
+# showcontent = true
+
+# [[tool.towncrier.type]]
+# directory = "doc"
+# name = "Improved Documentation"
+# showcontent = true
+
+[tool.towncrier.type_section]
+# sections en fonction des étiquettes
+"Features" = "Added"
+"Changes" = "Changed"
+"Deprecations" = "Deprecated"
+"Removals" = "Removed"
+"Bug Fixes" = "Fixed"
+"Security" = "Security"
+
+[tool.towncrier.type_aliases]
+# alias pour éviter la duplication
+"added" = "Added"
+"feature" = "Added"
+"change" = "Changed"
+"changed" = "Changed"
+"deprecate" = "Deprecated"
+"deprecation" = "Deprecated"
+"remove" = "Removed"
+"fix" = "Fixed"
+"bug" = "Fixed"
+"security" = "Security"
+
+[tool.towncrier.titles]
+# titres des différentes sections
+"Added" = "Features"
+"Changed" = "Changes"
+"Deprecated" = "Deprecations"
+"Removed" = "Removals"
+"Fixed" = "Bug Fixes"
+"Security" = "Security"
