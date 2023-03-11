@@ -39,6 +39,30 @@ class ImprovedList(list):
         lst.map(str)    # Returns a new list with each element converted to a string.
     """
 
+    def __init__(self, *args, **kwargs):
+        """
+        Constructor for ImprovedList.
+
+        Parameters:
+        - *args: positional arguments to initialize list
+        - **kwargs: keyword arguments to initialize list
+        """
+        super().__init__(*args, **kwargs)
+
+    def __add__(self, other):
+        """
+        Overrides the + operator to concatenate two ImprovedList objects.
+
+        Parameters:
+        - other (ImprovedList): The other ImprovedList object to concatenate.
+
+        Returns:
+        - (ImprovedList): The concatenated ImprovedList object.
+        """
+        new_list = self.copy()
+        new_list.extend(other)
+        return self.__class__(new_list)
+
     @property
     def inspect(self) -> None:
         """Display a list with inspect for each element.

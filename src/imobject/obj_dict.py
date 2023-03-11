@@ -24,7 +24,6 @@ Note that when you use dot notation to access an attribute, if the attribute doe
 
 """
 import pprint
-from imobject.orm_collection import OrmCollection
 
 # class ObjDictException(AttributeError):
 #     """Associated objdixt Exception"""
@@ -107,6 +106,7 @@ class ObjDict(dict):
     def inspect(self):
         """Return a pretty formatted information of object"""
         pprint.pprint(self, indent=4)
+        return self
 
     def select(self, wanted_keys: list) -> "ObjDict":
         """Filter dict by returning only some keys"""
@@ -133,5 +133,9 @@ class ObjDict(dict):
         if isinstance(item, dict):
             return ObjDict(item)
         if isinstance(item, list):
+            from imobject.orm_collection import (  # pylint: disable=import-outside-toplevel
+                OrmCollection,
+            )
+
             return OrmCollection(item)
         return item

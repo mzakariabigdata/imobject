@@ -42,9 +42,9 @@ def generate_examples(item, report):
         # Récupérer les valeurs des paramètres
         try:
             argvalues = item.callspec.params.values()
-            print(argnames, argvalues)
+            print("\n", argnames, argvalues)
             # test_first ['lst', 'args', 'expected_output'] dict_values([[1, 2, 3], (2,), [1, 2]])
-        except ValueError:
+        except AttributeError:
             pass
 
 

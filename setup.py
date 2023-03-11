@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="imobject",
-    version="1.0.6",
+    version="1.0.10",
     author="Zakaria Morchid",
     author_email="morchid.zakariaa@gmail.com",
     description="Imporve object",
@@ -17,6 +17,7 @@ setup(
     },
     classifiers=[
         "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
     package_dir={"": "src"},

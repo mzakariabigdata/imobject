@@ -50,6 +50,10 @@ install-requirements-dev: requirements-dev
 ###################
 ###### Build ######
 ###################
+app-examples:
+	cd examples && python examples_improved_list.py
+	cd examples && python examples_objdict.py
+	cd examples && python examples_orm_collection.py
 app-clean:
 	rm -f dist/*.gz
 app-dist: app-clean
@@ -83,7 +87,8 @@ cov-xml:
 # Nettoie les fichiers générés précédemment en utilisant l'outil pyclean.
 clean-py:
 	pyclean . -q
-.PHONY: tests clean-py lint format app app-clean
+fl: format lint
+.PHONY: tests clean-py lint format app app-clean fl app-examples
 
 ###################
 ###### Docs #######

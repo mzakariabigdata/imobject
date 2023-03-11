@@ -172,12 +172,14 @@ class Filter:
         self.value = value
 
     def evaluate(self, obj: Dict[str, Any]) -> bool:
+        obj = self._clean_item(obj)
+        # if not isinstance(obj, object):
+        #     return False
         attr_value = getattr(obj, self.attribute)
-        # print(attr_value, self.attribute, self.value)
         if self.operator is not None:
             if self.operator in self.op_funcs:
                 return self.op_funcs[self.operator](attr_value, self.value)
-            raise ValueError(f"Invalid operator {self.operator}")
+            raise ValueError(f"'{self.operator}' is not a valid operator")
         if self.contains_regex(self.value):
             return re.match(self.value, attr_value)
         return attr_value == self.value
@@ -213,9 +215,29 @@ class Filter:
         Raises:
             TypeError: If the given operands are not supported for the given operator.
         """
-        raise TypeError(
-            f"unsupported operand type(s) for {operator}: '{type(first_operand).__name__}' and '{type(second_operand).__name__}'"
-        )
+        if operator in [">", ">=", "<", "<="]:
+            raise TypeError(
+                f"Invalid type for value of '{operator}' operator : expected int, found {type(second_operand).__name__}"
+            )
+        if operator in ["in", "nin"]:
+            raise TypeError(
+                f"Invalid type for value of '{operator}' operator : expected list, found {type(second_operand).__name__}"
+            )
+        if operator in ["contains", "startswith", "endswith"]:
+            raise TypeError(f"'{operator}' lookup only works for string type fields")
+        if operator in ["==", "!="]:
+            raise TypeError(
+                f"'{operator}' operator only works for same type fields, found {type(first_operand).__name__} and {type(second_operand).__name__}"
+            )
+
+    @staticmethod
+    def _clean_item(item):  # pylint: disable=inconsistent-return-statements
+        """Improve type of object"""
+        if isinstance(item, dict):
+            # pylint: disable=import-outside-toplevel
+            from imobject.obj_dict import ObjDict
+
+            return ObjDict(item)
 
 
 class Query:
@@ -336,7 +358,7 @@ class OrmCollection(ImprovedList):
             if "__" in key:
                 attribute, operator = key.split("__")
                 if operator not in Filter.op_funcs:
-                    raise ValueError(f"Invalid operator {operator}")
+                    raise ValueError(f"'{operator}' is not a valid operator")
                 filters_list.append(Filter(attribute, operator, value))
             else:
                 filters_list.append(Filter(key, None, value))
@@ -401,7 +423,11 @@ class OrmCollection(ImprovedList):
             raise ValueError("All elements in the list must be integers or floats.")
         if isinstance(key, str):
             return self.__class__(
-                sorted(self, key=lambda x: getattr(x, key), reverse=reverse)
+                sorted(
+                    self,
+                    key=lambda x: getattr(self._clean_item(x), key),
+                    reverse=reverse,
+                )
             )
         if callable(key):
             return self.__class__(sorted(self, key=key, reverse=reverse))
@@ -423,6 +449,7 @@ class OrmCollection(ImprovedList):
         """
         groups = {}
         for obj in self:
+            obj = self._clean_item(obj)
             key = key_func(obj)
             if key not in groups:
                 groups[key] = OrmCollection()
@@ -520,6 +547,7 @@ class OrmCollection(ImprovedList):
         distinct_values = []
         seen = set()
         for elm in self:
+            elm = self._clean_item(elm)
             # distinct_values.append(tuple(getattr(elm, field) for field in args))
             values = tuple(getattr(elm, field) for field in args)
             if values not in seen:
@@ -528,3 +556,17 @@ class OrmCollection(ImprovedList):
 
         # return self.__class__(list(dict.fromkeys(distinct_values)))
         return self.__class__(distinct_values)
+
+    @staticmethod
+    def _clean_item(item):
+        """Improve type of object"""
+        if isinstance(item, dict):
+            # Utilisation de OrmCollection ici ne pose pas de problème car on l'importe
+            # seulement lorsque cette méthode est appelée
+            # pylint: disable=import-outside-toplevel
+            from imobject.obj_dict import (
+                ObjDict,
+            )
+
+            return ObjDict(item)
+        return item

@@ -354,6 +354,23 @@ def describe_map():  # pylint: disable=too-many-statements
         result = people.map(called, filter_func=filter_func)
         assert result == expected_output
 
+    @pytest.mark.parametrize(
+        "lst1, lst2, expected",
+        [
+            ([1, 2, 3], [4, 5], [1, 2, 3, 4, 5]),
+            ([], [1, 2, 3], [1, 2, 3]),
+            ([1, 2], [], [1, 2]),
+            ([], [], []),
+            (["a", "b"], ["c", "d"], ["a", "b", "c", "d"]),
+        ],
+    )
+    def test_add(lst1, lst2, expected):
+        improved_list_1 = ImprovedList(lst1)
+        improved_list_2 = ImprovedList(lst2)
+        result = improved_list_1 + improved_list_2
+        assert isinstance(result, ImprovedList)
+        assert result == expected
+
     def test_filter_map_person_filter(person_class):  # pylint: disable=unused-variable
         people = ImprovedList(
             [
