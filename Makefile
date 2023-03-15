@@ -54,6 +54,7 @@ app-examples:
 	cd examples && python examples_improved_list.py
 	cd examples && python examples_objdict.py
 	cd examples && python examples_orm_collection.py
+	cd examples && python examples_ioc.py
 app-clean:
 	rm -f dist/*.gz
 app-dist: app-clean
