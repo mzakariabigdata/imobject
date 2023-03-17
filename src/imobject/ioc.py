@@ -43,7 +43,7 @@ class ObjectFactory:
                         (sous forme de chaîne de caractères) et éventuellement des paramètres
                           de construction et des attributs pour les objets imbriqués.
         - class_map (dict): Un dictionnaire de correspondance de types de classe,
-                            qui associe les noms des types de classe (sous forme de chaîne 
+                            qui associe les noms des types de classe (sous forme de chaîne
                             de caractères) aux classes réelles (objets Python).
 
         Returns:

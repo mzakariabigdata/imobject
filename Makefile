@@ -50,6 +50,11 @@ install-requirements-dev: requirements-dev
 ###################
 ###### Build ######
 ###################
+behave:
+	behave --no-capture
+###################
+###### Build ######
+###################
 app-examples:
 	cd examples && python examples_improved_list.py
 	cd examples && python examples_objdict.py
