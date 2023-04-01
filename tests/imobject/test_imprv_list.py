@@ -93,6 +93,7 @@ def describe_fist():
                 [1, 2, 3], (2,), ImprovedList([1, 2]), id="test_first_two_elements"
             ),
             pytest.param([], (), None, id="test_first_empty_list"),
+            pytest.param([{"a": 5}], (), {"a": 5}, id="test_first_dict"),
         ],
     )
     def test_first(lst, args, expected_output):
