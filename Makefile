@@ -56,7 +56,12 @@ install-requirements-dev: requirements-dev ## Installe les dépendances de déve
 	@echo "Installer les dépendances de développement en utilisant le fichier requirements-dev.txt."
 	pip3 install -r requirements-dev.txt
 
-.PHONY: env-activate env-create kivy-install env-init requirements-prod requirements-dev install-requirements-prod install-requirements-dev requirements-lock get-vscode-extensions install-vscode-extensions env-variables
+install-auto-completion: ## Install auto-completion (in alpine)
+	@apk add --no-cache  bash-completion > /dev/null 2>&1
+	@echo "source /etc/profile.d/bash_completion.sh" >> ~/.bashrc
+	@echo -e "\033[31mTap this command to activate auto-completion:\033[0m \033[32msource ~/.bashrc\033[0m"
+	
+.PHONY: env-activate env-create kivy-install env-init requirements-prod requirements-dev install-requirements-prod install-requirements-dev requirements-lock get-vscode-extensions install-vscode-extensions env-variables install-auto-completion
 
 ###################
 ###### Behave ######
