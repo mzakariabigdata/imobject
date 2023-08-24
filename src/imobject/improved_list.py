@@ -12,6 +12,7 @@ For more information on the `ImprovedList` class and its methods, see the class 
 
 import pprint
 from typing import List, Any, Union, Callable
+from imobject.obj_dict import ObjDict
 
 
 class ImprovedList(list):
@@ -87,6 +88,14 @@ class ImprovedList(list):
                 else:
                     pertty_peint = pprint.PrettyPrinter(indent=3)
                     pertty_peint.pprint(value)
+
+    def append(self, item):
+        """Append an item to the ImprovedList."""
+        # Convertir les dictionnaires en ObjDict avant de les ajouter
+
+        if isinstance(item, dict) and not isinstance(item, ObjDict):
+            item = ObjDict(item)
+        super().append(item)
 
     def first(self, count: int = 1) -> Union[None, Any, "ImprovedList"]:
         """Return the first count elements of the ImprovedList.
@@ -308,9 +317,5 @@ class ImprovedList(list):
             # Utilisation de OrmCollection ici ne pose pas de problème car on l'importe
             # seulement lorsque cette méthode est appelée
             # pylint: disable=import-outside-toplevel
-            from imobject.obj_dict import (
-                ObjDict,
-            )
-
             return ObjDict(item)
         return item

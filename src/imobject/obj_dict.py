@@ -25,6 +25,7 @@ Note that when you use dot notation to access an attribute, if the attribute doe
 """
 import pprint
 
+
 # class ObjDictException(AttributeError):
 #     """Associated objdixt Exception"""
 
@@ -51,16 +52,26 @@ class ObjDict(dict):
 
     def __getattr__(self, name: str):
         """Get attribute value"""
-        try:
-            return self._clean_item(self[name])
-        except KeyError as exc:
+        if name not in self:
             raise AttributeError(
                 f"'{self.__class__.__name__}' object has no attribute '{name}'"
-            ) from exc
+            )
+        return self._clean_item(self[name])
 
     def __setattr__(self, name: str, value):
         """Set Any attribute value"""
-        self[name] = self._clean_item(value)
+        # Convertir les dictionnaires en ObjDict
+        from imobject.improved_list import (  # pylint: disable=import-outside-toplevel
+            ImprovedList,
+        )
+
+        if isinstance(value, dict) and not isinstance(value, ObjDict):
+            value = ObjDict(value)
+        # Convertir les listes en ImprovedList
+        elif isinstance(value, list) and not isinstance(value, ImprovedList):
+            value = ImprovedList(value)
+        super().__setattr__(name, value)
+        self[name] = value
 
     def __delattr__(self, name: str):
         """Delete attribute"""
@@ -73,10 +84,16 @@ class ObjDict(dict):
 
     def to_dict(self) -> dict:
         """Return a dictionary representation of the object"""
+        from imobject.orm_collection import (  # pylint: disable=import-outside-toplevel
+            OrmCollection,
+        )
+
         result = {}
         for key, value in self.items():
             if isinstance(value, ObjDict):
                 result[key] = value.to_dict()
+            elif isinstance(value, OrmCollection):  # Ajouté cette partie
+                result[key] = list(value)  # Convertir OrmCollection en liste
             else:
                 result[key] = value
         return result
@@ -130,7 +147,7 @@ class ObjDict(dict):
     @staticmethod
     def _clean_item(item):
         """Improve type of object"""
-        if isinstance(item, dict):
+        if isinstance(item, dict) and not isinstance(item, ObjDict):
             return ObjDict(item)
         if isinstance(item, list):
             from imobject.orm_collection import (  # pylint: disable=import-outside-toplevel

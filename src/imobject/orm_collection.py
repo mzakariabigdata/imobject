@@ -331,6 +331,11 @@ class OrmCollection(ImprovedList):
     providing an interface and additional methods for querying and manipulating objects in the list.
     """
 
+    # def __repr__(self):
+    #     """Provide a string representation of the OrmCollection instance."""
+    #     items_repr = ", ".join([repr(item) for item in self])
+    #     return f"OrmCollection([{items_repr}])"
+
     def where(self, *queries, **filters) -> "OrmCollection":
         """
         Filters the collection to only include objects that match the provided criteria.
