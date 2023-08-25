@@ -24,9 +24,13 @@ Note that when you use dot notation to access an attribute, if the attribute doe
 
 """
 import pprint
+from imobject.improved_list import (
+    ImprovedList,
+)
 
-# class ObjDictException(AttributeError):
-#     """Associated objdixt Exception"""
+from imobject.orm_collection import (
+    OrmCollection,
+)
 
 
 class ObjDict(dict):
@@ -51,25 +55,47 @@ class ObjDict(dict):
 
     def __getattr__(self, name: str):
         """Get attribute value"""
-        try:
-            return self._clean_item(self[name])
-        except KeyError as exc:
+        if name not in self:
             raise AttributeError(
                 f"'{self.__class__.__name__}' object has no attribute '{name}'"
-            ) from exc
+            )
+        return self._clean_item(self[name])
 
     def __setattr__(self, name: str, value):
         """Set Any attribute value"""
-        self[name] = self._clean_item(value)
+        # Convertir les dictionnaires en ObjDict
+
+        if isinstance(value, dict) and not isinstance(value, ObjDict):
+            value = ObjDict(value)
+        # Convertir les listes en ImprovedList
+        elif isinstance(value, list) and not isinstance(value, ImprovedList):
+            value = ImprovedList(value)
+        super().__setattr__(name, value)
+        self[name] = value
 
     def __delattr__(self, name: str):
-        """Delete attribute"""
-        try:
+        """
+        Supprime un attribut de l'objet.
+
+        Cette méthode est utilisée pour supprimer un attribut de l'objet. Si l'attribut
+        est également une clé dans le dictionnaire sous-jacent, il est également supprimé
+        du dictionnaire. Si l'attribut n'existe pas, une AttributeError est levée.
+
+        Args:
+            name (str): Le nom de l'attribut à supprimer.
+
+        Raises:
+            AttributeError: Si l'attribut spécifié n'existe pas.
+        """
+        # If the attribute exists in the dictionary, delete it
+        if name in self:
             del self[name]
-        except KeyError as exc:
+            if hasattr(self, name):
+                super().__delattr__(name)
+        else:
             raise AttributeError(
                 f"'{self.__class__.__name__}' object has no attribute '{name}'"
-            ) from exc
+            )
 
     def to_dict(self) -> dict:
         """Return a dictionary representation of the object"""
@@ -77,6 +103,8 @@ class ObjDict(dict):
         for key, value in self.items():
             if isinstance(value, ObjDict):
                 result[key] = value.to_dict()
+            elif isinstance(value, OrmCollection):  # Ajouté cette partie
+                result[key] = list(value)  # Convertir OrmCollection en liste
             else:
                 result[key] = value
         return result
@@ -130,12 +158,8 @@ class ObjDict(dict):
     @staticmethod
     def _clean_item(item):
         """Improve type of object"""
-        if isinstance(item, dict):
+        if isinstance(item, dict) and not isinstance(item, ObjDict):
             return ObjDict(item)
         if isinstance(item, list):
-            from imobject.orm_collection import (  # pylint: disable=import-outside-toplevel
-                OrmCollection,
-            )
-
             return OrmCollection(item)
         return item

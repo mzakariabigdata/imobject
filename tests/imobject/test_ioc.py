@@ -6,14 +6,14 @@ from imobject import ObjectFactory
 
 
 # Exemple de classes pour les tests
-class Parent:
+class Parent:  # pylint: disable=too-few-public-methods
     """Classe Parent pour les tests."""
 
     def __init__(self, name):
         self.name = name
 
 
-class Child:
+class Child:  # pylint: disable=too-few-public-methods
     """Classe Child pour les tests."""
 
     def __init__(self, age):
@@ -41,7 +41,9 @@ class_map = {
 @pytest.mark.parametrize(
     "conf, class_map, expected_class", [(test_conf, class_map, Parent)]
 )
-def test_object_creation(conf, class_map, expected_class):
+def test_object_creation(
+    conf, class_map, expected_class
+):  # pylint: disable=redefined-outer-name
     """Teste la méthode create_object de la classe ObjectFactory."""
 
     factory = ObjectFactory(conf, class_map)

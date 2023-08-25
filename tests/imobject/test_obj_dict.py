@@ -18,6 +18,7 @@ This module requires the following external libraries to be installed:
 """
 import pytest
 from imobject import ObjDict
+from imobject import ImprovedList
 
 
 def describe_objdict():
@@ -80,6 +81,14 @@ def describe_objdict():
         # initialisation avec un dictionnaire
         # vérifier que l'objet initialisé est bien une instance de ObjDict
         assert isinstance(obj, ObjDict)
+
+        obj.account = {}
+        obj.account.unsername = "John"
+        obj.account.password = "1234"
+        obj.account.users = []
+        obj.account.users.append({"name": "John", "age": 25})
+
+        assert isinstance(obj.account.users, ImprovedList)
         # accès aux éléments avec la notation par point
         # obj.a == 1
         # obj.test.zak.age == 33
@@ -112,11 +121,22 @@ def describe_objdict():
         """
         Test la suppression d'éléments avec del.
         """
+        obj1 = ObjDict()
+        obj1.test = "test_value"
+        obj1.another_test = "another_test_value"
+
+        # Suppression d'un attribut avec del
+        del obj1.test
+
+        # Vérifiez qu'une AttributeError est levée
+        # lors de la tentative d'accès à l'attribut supprimé
+        with pytest.raises(AttributeError):
+            _ = obj1.test  # Essayer d'accéder à l'attribut supprimé
         # suppression d'éléments avec del
-        del obj.a
+        del obj.test
         # lève une erreur KeyError lorsqu'un élément n'existe pas
         with pytest.raises(AttributeError):
-            obj.a  # pylint: disable=pointless-statement
+            obj.test  # pylint: disable=pointless-statement
 
         with pytest.raises(AttributeError):
             del obj.non_existent_attribute

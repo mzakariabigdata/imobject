@@ -172,7 +172,6 @@ class Filter:
         self.value = value
 
     def evaluate(self, obj: Dict[str, Any]) -> bool:
-        obj = self._clean_item(obj)
         # if not isinstance(obj, object):
         #     return False
         attr_value = getattr(obj, self.attribute)
@@ -229,15 +228,6 @@ class Filter:
             raise TypeError(
                 f"'{operator}' operator only works for same type fields, found {type(first_operand).__name__} and {type(second_operand).__name__}"
             )
-
-    @staticmethod
-    def _clean_item(item):  # pylint: disable=inconsistent-return-statements
-        """Improve type of object"""
-        if isinstance(item, dict):
-            # pylint: disable=import-outside-toplevel
-            from imobject.obj_dict import ObjDict
-
-            return ObjDict(item)
 
 
 class Query:
@@ -330,6 +320,11 @@ class OrmCollection(ImprovedList):
     A list-like collection class that extends ImprovedList and that implements an ORM overlay (wrapper) for a list of objects,
     providing an interface and additional methods for querying and manipulating objects in the list.
     """
+
+    # def __repr__(self):
+    #     """Provide a string representation of the OrmCollection instance."""
+    #     items_repr = ", ".join([repr(item) for item in self])
+    #     return f"OrmCollection([{items_repr}])"
 
     def where(self, *queries, **filters) -> "OrmCollection":
         """
@@ -425,7 +420,7 @@ class OrmCollection(ImprovedList):
             return self.__class__(
                 sorted(
                     self,
-                    key=lambda x: getattr(self._clean_item(x), key),
+                    key=lambda x: getattr(x, key),
                     reverse=reverse,
                 )
             )
@@ -449,7 +444,6 @@ class OrmCollection(ImprovedList):
         """
         groups = {}
         for obj in self:
-            obj = self._clean_item(obj)
             key = key_func(obj)
             if key not in groups:
                 groups[key] = OrmCollection()
@@ -547,7 +541,6 @@ class OrmCollection(ImprovedList):
         distinct_values = []
         seen = set()
         for elm in self:
-            elm = self._clean_item(elm)
             # distinct_values.append(tuple(getattr(elm, field) for field in args))
             values = tuple(getattr(elm, field) for field in args)
             if values not in seen:
@@ -556,17 +549,3 @@ class OrmCollection(ImprovedList):
 
         # return self.__class__(list(dict.fromkeys(distinct_values)))
         return self.__class__(distinct_values)
-
-    @staticmethod
-    def _clean_item(item):
-        """Improve type of object"""
-        if isinstance(item, dict):
-            # Utilisation de OrmCollection ici ne pose pas de problème car on l'importe
-            # seulement lorsque cette méthode est appelée
-            # pylint: disable=import-outside-toplevel
-            from imobject.obj_dict import (
-                ObjDict,
-            )
-
-            return ObjDict(item)
-        return item

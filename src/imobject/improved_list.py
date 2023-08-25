@@ -88,6 +88,16 @@ class ImprovedList(list):
                     pertty_peint = pprint.PrettyPrinter(indent=3)
                     pertty_peint.pprint(value)
 
+    def append(self, item):
+        """Append an item to the ImprovedList."""
+        # Convertir les dictionnaires en ObjDict avant de les ajouter
+        from imobject.obj_dict import ObjDict  # pylint: disable=import-outside-toplevel
+
+        if isinstance(item, dict) and not isinstance(item, ObjDict):
+            item = ObjDict(item)
+
+        super().append(item)
+
     def first(self, count: int = 1) -> Union[None, Any, "ImprovedList"]:
         """Return the first count elements of the ImprovedList.
 
@@ -104,7 +114,7 @@ class ImprovedList(list):
         if data_size > 1:
             return self.__class__(data)
         if data_size == 1:
-            return self._clean_item(data[0])
+            return data[0]
         return None
 
     def last(self, count: int = 1) -> Union[None, Any, "ImprovedList"]:
@@ -123,7 +133,7 @@ class ImprovedList(list):
         if data_size > 1:
             return self.__class__(data)
         if data_size == 1:
-            return self._clean_item(data[0])
+            return data[0]
         return None
 
     def filter(self, filter_func: Callable) -> "ImprovedList":
@@ -300,17 +310,3 @@ class ImprovedList(list):
             )
         # Convertir le résultat en ImprovedList ou en list en fonction de return_type.
         return self.convert_result(return_type, result)
-
-    @staticmethod
-    def _clean_item(item):
-        """Improve type of object"""
-        if isinstance(item, dict):
-            # Utilisation de OrmCollection ici ne pose pas de problème car on l'importe
-            # seulement lorsque cette méthode est appelée
-            # pylint: disable=import-outside-toplevel
-            from imobject.obj_dict import (
-                ObjDict,
-            )
-
-            return ObjDict(item)
-        return item
