@@ -91,10 +91,11 @@ class ImprovedList(list):
     def append(self, item):
         """Append an item to the ImprovedList."""
         # Convertir les dictionnaires en ObjDict avant de les ajouter
-        from imobject.obj_dict import ObjDict
+        from imobject.obj_dict import ObjDict  # pylint: disable=import-outside-toplevel
 
         if isinstance(item, dict) and not isinstance(item, ObjDict):
             item = ObjDict(item)
+
         super().append(item)
 
     def first(self, count: int = 1) -> Union[None, Any, "ImprovedList"]:
