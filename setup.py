@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="imobject",
-    version="1.1.3",
+    version="2.0.0",
     author="Zakaria Morchid",
     author_email="morchid.zakariaa@gmail.com",
     description="Imporve object",
