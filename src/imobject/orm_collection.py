@@ -562,16 +562,16 @@ class OrmCollection(ImprovedList):
         # return self.__class__(list(dict.fromkeys(distinct_values)))
         return self.__class__(distinct_values)
 
-    @staticmethod
-    def _clean_item(item):
-        """Improve type of object"""
-        if isinstance(item, dict):
-            # Utilisation de OrmCollection ici ne pose pas de problème car on l'importe
-            # seulement lorsque cette méthode est appelée
-            # pylint: disable=import-outside-toplevel
-            from imobject.obj_dict import (
-                ObjDict,
-            )
+    # @staticmethod
+    # def _clean_item(item):
+    #     """Improve type of object"""
+    #     if isinstance(item, dict):
+    #         # Utilisation de OrmCollection ici ne pose pas de problème car on l'importe
+    #         # seulement lorsque cette méthode est appelée
+    #         # pylint: disable=import-outside-toplevel
+    #         from imobject.obj_dict import (
+    #             ObjDict,
+    #         )
 
-            return ObjDict(item)
-        return item
+    #         return ObjDict(item)
+    #     return item
