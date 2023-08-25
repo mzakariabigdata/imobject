@@ -12,7 +12,6 @@ For more information on the `ImprovedList` class and its methods, see the class 
 
 import pprint
 from typing import List, Any, Union, Callable
-from imobject.obj_dict import ObjDict
 
 
 class ImprovedList(list):
@@ -49,14 +48,6 @@ class ImprovedList(list):
         - **kwargs: keyword arguments to initialize list
         """
         super().__init__(*args, **kwargs)
-
-    # def __delitem__(self, key):
-    #     """Delete an item"""
-    #     print("delete item__________________________")
-    #     if key in self:
-    #         super().__delitem__(key)
-    #     else:
-    #         raise KeyError(key)
 
     def __add__(self, other):
         """
@@ -100,6 +91,7 @@ class ImprovedList(list):
     def append(self, item):
         """Append an item to the ImprovedList."""
         # Convertir les dictionnaires en ObjDict avant de les ajouter
+        from imobject.obj_dict import ObjDict
 
         if isinstance(item, dict) and not isinstance(item, ObjDict):
             item = ObjDict(item)
@@ -121,7 +113,7 @@ class ImprovedList(list):
         if data_size > 1:
             return self.__class__(data)
         if data_size == 1:
-            return self._clean_item(data[0])
+            return data[0]
         return None
 
     def last(self, count: int = 1) -> Union[None, Any, "ImprovedList"]:
@@ -140,7 +132,7 @@ class ImprovedList(list):
         if data_size > 1:
             return self.__class__(data)
         if data_size == 1:
-            return self._clean_item(data[0])
+            return data[0]
         return None
 
     def filter(self, filter_func: Callable) -> "ImprovedList":
@@ -317,13 +309,3 @@ class ImprovedList(list):
             )
         # Convertir le résultat en ImprovedList ou en list en fonction de return_type.
         return self.convert_result(return_type, result)
-
-    @staticmethod
-    def _clean_item(item):
-        """Improve type of object"""
-        if isinstance(item, dict):
-            # Utilisation de OrmCollection ici ne pose pas de problème car on l'importe
-            # seulement lorsque cette méthode est appelée
-            # pylint: disable=import-outside-toplevel
-            return ObjDict(item)
-        return item

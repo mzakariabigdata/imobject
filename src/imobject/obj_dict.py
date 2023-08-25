@@ -24,6 +24,13 @@ Note that when you use dot notation to access an attribute, if the attribute doe
 
 """
 import pprint
+from imobject.improved_list import (
+    ImprovedList,
+)
+
+from imobject.orm_collection import (
+    OrmCollection,
+)
 
 
 class ObjDict(dict):
@@ -57,9 +64,6 @@ class ObjDict(dict):
     def __setattr__(self, name: str, value):
         """Set Any attribute value"""
         # Convertir les dictionnaires en ObjDict
-        from imobject.improved_list import (  # pylint: disable=import-outside-toplevel
-            ImprovedList,
-        )
 
         if isinstance(value, dict) and not isinstance(value, ObjDict):
             value = ObjDict(value)
@@ -95,10 +99,6 @@ class ObjDict(dict):
 
     def to_dict(self) -> dict:
         """Return a dictionary representation of the object"""
-        from imobject.orm_collection import (  # pylint: disable=import-outside-toplevel
-            OrmCollection,
-        )
-
         result = {}
         for key, value in self.items():
             if isinstance(value, ObjDict):
@@ -161,9 +161,5 @@ class ObjDict(dict):
         if isinstance(item, dict) and not isinstance(item, ObjDict):
             return ObjDict(item)
         if isinstance(item, list):
-            from imobject.orm_collection import (  # pylint: disable=import-outside-toplevel
-                OrmCollection,
-            )
-
             return OrmCollection(item)
         return item
