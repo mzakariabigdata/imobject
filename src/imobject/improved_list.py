@@ -50,6 +50,14 @@ class ImprovedList(list):
         """
         super().__init__(*args, **kwargs)
 
+    # def __delitem__(self, key):
+    #     """Delete an item"""
+    #     print("delete item__________________________")
+    #     if key in self:
+    #         super().__delitem__(key)
+    #     else:
+    #         raise KeyError(key)
+
     def __add__(self, other):
         """
         Overrides the + operator to concatenate two ImprovedList objects.

@@ -26,10 +26,6 @@ Note that when you use dot notation to access an attribute, if the attribute doe
 import pprint
 
 
-# class ObjDictException(AttributeError):
-#     """Associated objdixt Exception"""
-
-
 class ObjDict(dict):
     """
     Dynamic Class as dict
@@ -74,13 +70,28 @@ class ObjDict(dict):
         self[name] = value
 
     def __delattr__(self, name: str):
-        """Delete attribute"""
-        try:
+        """
+        Supprime un attribut de l'objet.
+
+        Cette méthode est utilisée pour supprimer un attribut de l'objet. Si l'attribut
+        est également une clé dans le dictionnaire sous-jacent, il est également supprimé
+        du dictionnaire. Si l'attribut n'existe pas, une AttributeError est levée.
+
+        Args:
+            name (str): Le nom de l'attribut à supprimer.
+
+        Raises:
+            AttributeError: Si l'attribut spécifié n'existe pas.
+        """
+        # If the attribute exists in the dictionary, delete it
+        if name in self:
             del self[name]
-        except KeyError as exc:
+            if hasattr(self, name):
+                super().__delattr__(name)
+        else:
             raise AttributeError(
                 f"'{self.__class__.__name__}' object has no attribute '{name}'"
-            ) from exc
+            )
 
     def to_dict(self) -> dict:
         """Return a dictionary representation of the object"""
